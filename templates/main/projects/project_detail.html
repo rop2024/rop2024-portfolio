@@ -1,8 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load image_utils %}
 
 {% block title %}{{ project.title }} - Portfolio{% endblock %}
 {% block description %}{{ project.short_description }}{% endblock %}
+
+{% block preload_images %}
+    {% if project.featured_image %}
+    <link rel="preload" as="image" href="{% get_image_rendition project.featured_image 'medium' %}">
+    {% endif %}
+    {% for render in renders|slice:":1" %}
+        {% if render.image %}
+        <link rel="preload" as="image" href="{% get_image_rendition render.image 'gallery' %}">
+        {% endif %}
+    {% endfor %}
+{% endblock %}
 
 {% block content %}
 <div class="min-h-screen pt-8">
@@ -21,9 +33,7 @@
                 <!-- Project Image -->
                 <div class="relative">
                     {% if project.featured_image %}
-                    <img src="{{ project.featured_image.url }}" 
-                         alt="{{ project.title }}"
-                         class="w-full h-64 lg:h-80 object-cover rounded-xl shadow-lg">
+                    {% responsive_image project.featured_image 'medium' project.title "w-full h-64 lg:h-80 object-cover rounded-xl shadow-lg" %}
                     {% else %}
                     <div class="w-full h-64 lg:h-80 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center">
                         <span class="text-white text-xl font-semibold">Project Image</span>
@@ -169,9 +179,7 @@
                 <a href="{% url 'project_detail' related_project.slug %}" 
                    class="glass-card glass-card-hover rounded-xl overflow-hidden group block">
                     {% if related_project.featured_image %}
-                    <img src="{{ related_project.featured_image.url }}" 
-                         alt="{{ related_project.title }}"
-                         class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300">
+                    {% responsive_image related_project.featured_image 'thumbnail' related_project.title "w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300" %}
                     {% endif %}
                     <div class="p-4">
                         <h3 class="font-semibold text-neutral-800 group-hover:text-primary-600 transition-colors mb-2">

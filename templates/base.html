@@ -6,12 +6,18 @@
     <title>{% block title %}Portfolio - Your Name{% endblock %}</title>
     <meta name="description" content="{% block description %}Professional portfolio showcasing projects and skills{% endblock %}">
     
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-    
+    <!-- Preload critical resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    {% load static tailwind_tags %}
+    {% tailwind_css %}
+    
+    <!-- Fallback CSS if Tailwind tag fails -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    
+    <!-- Preload important images -->
+    {% block preload_images %}{% endblock %}
     
     {% block extra_css %}{% endblock %}
 </head>
@@ -113,6 +119,24 @@
 
     <!-- JavaScript -->
     <script>
+        // Lazy load images with Intersection Observer
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+
         // Mobile menu toggle
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             const menu = document.getElementById('mobile-menu');

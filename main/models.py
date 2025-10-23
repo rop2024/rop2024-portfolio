@@ -1,5 +1,5 @@
 from django.db import models
-from versatileimagefield.fields import VersatileImageField
+from versatileimagefield.fields import VersatileImageField, PPOIField
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 import os
@@ -33,13 +33,19 @@ class Profile(models.Model):
     twitter = models.URLField(blank=True)
     personal_website = models.URLField(blank=True)
     
-    # Profile image
+    # Profile image with VersatileImageField
     profile_image = VersatileImageField(
         upload_to='profile/',
         blank=True,
         null=True,
-        help_text='Main profile picture'
+        help_text='Main profile picture',
+        ppoi_field='profile_image_ppoi',
+        width_field='profile_image_width',
+        height_field='profile_image_height',
     )
+    profile_image_ppoi = PPOIField()  # Primary Point of Interest
+    profile_image_width = models.PositiveIntegerField(blank=True, null=True)
+    profile_image_height = models.PositiveIntegerField(blank=True, null=True)
     
     # Resume/CV
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
@@ -60,6 +66,28 @@ class Profile(models.Model):
             # If you're creating a new profile but one already exists
             pass
         super().save(*args, **kwargs)
+    
+    @property
+    def profile_image_srcset(self):
+        """Generate srcset for responsive profile images"""
+        if not self.profile_image:
+            return ""
+        
+        sizes = [
+            ('small_square_crop', '150w'),
+            ('medium_square_crop', '300w'),
+            ('large_square_crop', '500w'),
+        ]
+        
+        srcset = []
+        for size, width in sizes:
+            try:
+                url = getattr(self.profile_image, size).url
+                srcset.append(f"{url} {width}")
+            except:
+                continue
+        
+        return ", ".join(srcset)
 
 class Project(models.Model):
     """
@@ -85,11 +113,17 @@ class Project(models.Model):
     github_url = models.URLField(validators=[validate_github_url], blank=True)
     live_url = models.URLField(blank=True, help_text="Link to live demo or deployed application")
     
-    # Images
+    # Featured image with VersatileImageField
     featured_image = VersatileImageField(
         upload_to='projects/featured/',
-        help_text='Main project image'
+        help_text='Main project image',
+        ppoi_field='featured_image_ppoi',
+        width_field='featured_image_width',
+        height_field='featured_image_height',
     )
+    featured_image_ppoi = PPOIField()
+    featured_image_width = models.PositiveIntegerField(blank=True, null=True)
+    featured_image_height = models.PositiveIntegerField(blank=True, null=True)
     
     # Timeline
     start_date = models.DateField()
@@ -118,6 +152,34 @@ class Project(models.Model):
     def get_technologies_list(self):
         """Return technologies as a list"""
         return [tech.strip() for tech in self.technologies.split(',')]
+    
+    @property
+    def featured_image_srcset(self):
+        """Generate srcset for responsive project images"""
+        if not self.featured_image:
+            return ""
+        
+        sizes = [
+            ('small', '320w'),
+            ('medium', '640w'),
+            ('large', '1024w'),
+            ('hero', '1600w'),
+        ]
+        
+        srcset = []
+        for size, width in sizes:
+            try:
+                url = getattr(self.featured_image, size).url
+                srcset.append(f"{url} {width}")
+            except:
+                continue
+        
+        return ", ".join(srcset)
+    
+    @property
+    def featured_image_sizes(self):
+        """Generate sizes attribute for responsive images"""
+        return "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 
 class ProjectRender(models.Model):
     """
@@ -125,10 +187,19 @@ class ProjectRender(models.Model):
     """
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='renders')
     title = models.CharField(max_length=200, blank=True)
+    
+    # Render image with VersatileImageField
     image = VersatileImageField(
         upload_to='projects/renders/',
-        help_text='Project screenshot or render'
+        help_text='Project screenshot or render',
+        ppoi_field='image_ppoi',
+        width_field='image_width',
+        height_field='image_height',
     )
+    image_ppoi = PPOIField()
+    image_width = models.PositiveIntegerField(blank=True, null=True)
+    image_height = models.PositiveIntegerField(blank=True, null=True)
+    
     description = models.TextField(blank=True)
     display_order = models.IntegerField(default=0)
     
@@ -141,6 +212,34 @@ class ProjectRender(models.Model):
     
     def __str__(self):
         return f"{self.project.title} - {self.title or 'Render'}"
+    
+    @property
+    def image_srcset(self):
+        """Generate srcset for responsive render images"""
+        if not self.image:
+            return ""
+        
+        sizes = [
+            ('thumbnail', '100w'),
+            ('card', '400w'),
+            ('gallery', '800w'),
+            ('lightbox', '1200w'),
+        ]
+        
+        srcset = []
+        for size, width in sizes:
+            try:
+                url = getattr(self.image, size).url
+                srcset.append(f"{url} {width}")
+            except:
+                continue
+        
+        return ", ".join(srcset)
+    
+    @property
+    def image_sizes(self):
+        """Generate sizes attribute for responsive images"""
+        return "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
 
 class ContactMessage(models.Model):
     """
