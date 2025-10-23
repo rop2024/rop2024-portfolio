@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Projects - Portfolio{% endblock %}
+{% block description %}Browse through my portfolio of projects and applications{% endblock %}
+
+{% block content %}
+<div class="min-h-screen pt-8">
+    <div class="container-custom">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl lg:text-5xl font-bold text-neutral-800 mb-4">
+                My Projects
+            </h1>
+            <p class="text-xl text-neutral-600 max-w-2xl mx-auto">
+                A collection of my work across various technologies and domains
+            </p>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <div class="flex flex-col gap-4">
+                <!-- Project Type Filters -->
+                <div class="flex flex-wrap gap-2">
+                    <a href="{% url 'project_list' %}" 
+                       class="px-4 py-2 rounded-lg {% if not selected_type %}bg-primary-600 text-white{% else %}bg-white/50 text-neutral-700 hover:bg-white/70{% endif %} transition-colors text-sm font-medium">
+                        All ({{ projects.paginator.count }})
+                    </a>
+                    {% for type_code, type_name in project_types %}
+                    <a href="?type={{ type_code }}" 
+                       class="px-4 py-2 rounded-lg {% if selected_type == type_code %}bg-primary-600 text-white{% else %}bg-white/50 text-neutral-700 hover:bg-white/70{% endif %} transition-colors text-sm font-medium">
+                        {{ type_name }}
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <!-- Search -->
+                <form method="get" class="flex gap-2 w-full">
+                    <input type="text" 
+                           name="q" 
+                           value="{{ search_query }}"
+                           placeholder="Search projects..."
+                           class="flex-1 px-4 py-2 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none">
+                    <button type="submit" class="btn-primary px-6 py-2">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        {% include 'main/projects/list.html' %}
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="flex justify-center mt-12">
+            <div class="glass-card rounded-xl p-4">
+                <div class="flex space-x-2">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+                       class="px-4 py-2 rounded-lg bg-white/50 text-neutral-700 hover:bg-white/70 transition-colors">
+                        Previous
+                    </a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <span class="px-4 py-2 rounded-lg bg-primary-600 text-white">
+                            {{ num }}
+                        </span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+                           class="px-4 py-2 rounded-lg bg-white/50 text-neutral-700 hover:bg-white/70 transition-colors">
+                            {{ num }}
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+                       class="px-4 py-2 rounded-lg bg-white/50 text-neutral-700 hover:bg-white/70 transition-colors">
+                        Next
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

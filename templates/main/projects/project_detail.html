@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} - Portfolio{% endblock %}
+{% block description %}{{ project.short_description }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen pt-8">
+    <div class="container-custom">
+        <!-- Back Button -->
+        <a href="{% url 'project_list' %}" class="inline-flex items-center space-x-2 text-primary-600 hover:text-primary-700 mb-8 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            <span>Back to Projects</span>
+        </a>
+
+        <!-- Project Header -->
+        <div class="glass-card rounded-2xl p-8 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <!-- Project Image -->
+                <div class="relative">
+                    {% if project.featured_image %}
+                    <img src="{{ project.featured_image.url }}" 
+                         alt="{{ project.title }}"
+                         class="w-full h-64 lg:h-80 object-cover rounded-xl shadow-lg">
+                    {% else %}
+                    <div class="w-full h-64 lg:h-80 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center">
+                        <span class="text-white text-xl font-semibold">Project Image</span>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Project Type Badge -->
+                    <div class="absolute top-4 right-4">
+                        <span class="glass-card px-4 py-2 rounded-full text-sm font-medium text-primary-700">
+                            {{ project.get_project_type_display }}
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Project Info -->
+                <div class="space-y-6">
+                    <div>
+                        <h1 class="text-4xl lg:text-5xl font-bold text-neutral-800 mb-4">
+                            {{ project.title }}
+                        </h1>
+                        <p class="text-xl text-neutral-600 leading-relaxed">
+                            {{ project.short_description }}
+                        </p>
+                    </div>
+                    
+                    <!-- Project Links -->
+                    <div class="flex flex-wrap gap-4">
+                        {% if project.github_url %}
+                        <a href="{{ project.github_url }}" 
+                           target="_blank"
+                           class="btn-primary flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                            <span>View Code</span>
+                        </a>
+                        {% endif %}
+                        
+                        {% if project.live_url %}
+                        <a href="{{ project.live_url }}" 
+                           target="_blank"
+                           class="btn-secondary flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                            <span>Live Demo</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Project Meta -->
+                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/20">
+                        <div>
+                            <h4 class="font-semibold text-neutral-700 mb-1">Timeline</h4>
+                            <p class="text-neutral-600">
+                                {{ project.start_date|date:"M Y" }} - 
+                                {% if project.end_date %}
+                                    {{ project.end_date|date:"M Y" }}
+                                {% else %}
+                                    Present
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-neutral-700 mb-1">Status</h4>
+                            <p class="text-neutral-600">
+                                {% if project.is_ongoing %}
+                                    Ongoing
+                                {% else %}
+                                    Completed
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Details -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Description -->
+                <div class="glass-card rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold text-neutral-800 mb-6">Project Overview</h2>
+                    <div class="prose prose-lg max-w-none text-neutral-600">
+                        {{ project.description|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Project Renders -->
+                {% if renders %}
+                <div class="glass-card rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold text-neutral-800 mb-6">Project Gallery</h2>
+                    {% include 'main/renders/grid.html' with renders=renders %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Technologies -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-xl font-semibold text-neutral-800 mb-4">Technologies Used</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for tech in project.get_technologies_list %}
+                        <span class="bg-primary-100 text-primary-700 px-3 py-2 rounded-lg text-sm font-medium">
+                            {{ tech }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Project Stats -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-xl font-semibold text-neutral-800 mb-4">Project Stats</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-neutral-600">Images</span>
+                            <span class="font-semibold text-primary-600">{{ renders.count }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-neutral-600">Featured</span>
+                            <span class="font-semibold text-primary-600">
+                                {% if project.is_featured %}Yes{% else %}No{% endif %}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-neutral-600">Created</span>
+                            <span class="font-semibold text-primary-600">{{ project.created_at|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Projects -->
+        {% if related_projects %}
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-neutral-800 mb-8 text-center">Related Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for related_project in related_projects %}
+                <a href="{% url 'project_detail' related_project.slug %}" 
+                   class="glass-card glass-card-hover rounded-xl overflow-hidden group block">
+                    {% if related_project.featured_image %}
+                    <img src="{{ related_project.featured_image.url }}" 
+                         alt="{{ related_project.title }}"
+                         class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300">
+                    {% endif %}
+                    <div class="p-4">
+                        <h3 class="font-semibold text-neutral-800 group-hover:text-primary-600 transition-colors mb-2">
+                            {{ related_project.title }}
+                        </h3>
+                        <p class="text-sm text-neutral-600 line-clamp-2">
+                            {{ related_project.short_description }}
+                        </p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
