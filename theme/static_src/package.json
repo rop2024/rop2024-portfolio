@@ -1,0 +1,23 @@
+{
+  "name": "theme",
+  "version": "3.6.0",
+  "description": "",
+  "scripts": {
+    "build": "npm run build:css && npm run build:js",
+    "build:css": "tailwindcss -i ./src/input.css -o ../static/css/output.css",
+    "build:js": "webpack --mode development",
+    "production": "npm run production:css && npm run production:js",
+    "production:css": "tailwindcss -i ./src/input.css -o ../static/css/output.css --minify",
+    "production:js": "webpack --mode production"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/typography": "^0.5.9",
+    "tailwindcss": "^3.3.0",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
