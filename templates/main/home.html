@@ -19,121 +19,127 @@
 {% block content %}
     {% if profile %}
     <!-- Hero Section -->
-    <section class="min-h-screen flex items-center justify-center section-padding">
-        <div class="container-custom text-center">
+    <section class="min-h-screen flex items-center justify-center pt-20 pb-12 relative overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary-300/15 rounded-full blur-3xl animate-float"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-primary-400/15 rounded-full blur-3xl animate-float" style="animation-delay: 1.5s;"></div>
+        </div>
+        
+        <div class="container-custom text-center relative z-10">
             <div class="max-w-4xl mx-auto">
                 <!-- Profile Image -->
                 {% if profile.profile_image %}
-                <div class="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden border-4 border-white/50 shadow-2xl">
-                    {% responsive_image profile.profile_image 'medium_square_crop' profile.name "w-full h-full object-cover" %}
+                <div class="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden border-4 border-white/60 shadow-lg glass-card-strong animate-fade-in">
+                    {% responsive_image profile.profile_image 'large_square_crop' profile.name "w-full h-full object-cover" %}
                 </div>
                 {% endif %}
                 
                 <!-- Hero Content -->
-                <h1 class="text-5xl lg:text-7xl font-bold text-neutral-800 mb-6 animate-fade-in">
-                    {{ profile.name }}
-                </h1>
-                
-                <p class="text-xl lg:text-2xl text-primary-600 font-medium mb-8 animate-slide-up">
-                    {{ profile.title }}
-                </p>
-                
-                <p class="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto leading-relaxed animate-slide-up">
-                    {{ profile.bio }}
-                </p>
+                <div class="space-y-6 animate-fade-in-up">
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-neutral-800">
+                        {{ profile.name }}
+                    </h1>
+                    
+                    <div class="inline-flex items-center space-x-3 bg-white/60 backdrop-blur-md rounded-full px-6 py-3 border border-white/30">
+                        <div class="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                        <p class="text-lg md:text-xl text-primary-600 font-semibold">
+                            {{ profile.title }}
+                        </p>
+                    </div>
+                    
+                    <p class="text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+                        {{ profile.bio }}
+                    </p>
+                </div>
                 
                 <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up">
-                    <a href="#projects" class="btn-primary">
-                        View My Work
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12 animate-fade-in-up">
+                    <a href="#projects" class="btn-primary group">
+                        <span class="flex items-center space-x-2">
+                            <span>View My Work</span>
+                            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </span>
                     </a>
-                    <a href="#contact" class="btn-secondary">
-                        Get In Touch
+                    <a href="#contact" class="btn-secondary group">
+                        <span class="flex items-center space-x-2">
+                            <span>Get In Touch</span>
+                            <svg class="w-5 h-5 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </span>
                     </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="section-padding bg-white/30">
+    <!-- Featured Projects Section -->
+    <section id="projects" class="py-20 lg:py-28">
         <div class="container-custom">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold text-neutral-800 mb-4">
+            <!-- Section Header -->
+            <div class="text-center mb-16 animate-fade-in-up">
+                <h2 class="text-4xl md:text-5xl lg:text-5xl font-bold text-neutral-800 mb-4">
                     Featured Projects
                 </h2>
-                <p class="text-xl text-neutral-600 max-w-2xl mx-auto">
-                    A collection of my recent work and personal projects
+                <p class="text-lg text-neutral-600 max-w-2xl mx-auto">
+                    A selection of my recent work and personal projects
                 </p>
             </div>
             
-            <!-- Projects Grid with Optimized Images -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Projects Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                 {% for project in projects %}
-                <article class="glass-card glass-card-hover rounded-2xl overflow-hidden group animate-fade-in">
-                    <!-- Project Image -->
-                    <div class="relative overflow-hidden">
+                <article class="project-card group">
+                    <div class="relative overflow-hidden h-48">
                         {% if project.featured_image %}
-                            {% responsive_image project.featured_image 'medium' project.title "w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" %}
+                            {% responsive_image project.featured_image 'large' project.title "w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" %}
                         {% else %}
-                            <div class="w-full h-48 bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
-                                <span class="text-white text-lg font-semibold">Project Image</span>
+                            <div class="w-full h-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
+                                <span class="text-white font-semibold">{{ project.title }}</span>
                             </div>
                         {% endif %}
+                        <div class="project-card-overlay"></div>
                         
                         <!-- Project Type Badge -->
-                        <div class="absolute top-4 right-4">
-                            <span class="glass-card px-3 py-1 rounded-full text-xs font-medium text-primary-700 backdrop-blur-sm">
+                        <div class="absolute top-4 right-4 transform translate-x-2 group-hover:translate-x-0 transition-transform">
+                            <span class="glass-card px-3 py-1 rounded-full text-xs font-medium text-primary-700">
                                 {{ project.get_project_type_display }}
                             </span>
                         </div>
                     </div>
                     
                     <!-- Project Content -->
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-neutral-800 mb-2 group-hover:text-primary-600 transition-colors">
+                    <div class="project-card-content">
+                        <h3 class="text-lg font-semibold text-white mb-2">
                             {{ project.title }}
                         </h3>
                         
-                        <p class="text-neutral-600 mb-4 line-clamp-3">
+                        <p class="text-white/90 text-sm mb-3 line-clamp-2">
                             {{ project.short_description }}
                         </p>
                         
                         <!-- Technologies -->
-                        <div class="flex flex-wrap gap-2 mb-4">
+                        <div class="flex flex-wrap gap-1 mb-4">
                             {% for tech in project.get_technologies_list|slice:":3" %}
-                            <span class="bg-primary-100 text-primary-700 px-2 py-1 rounded text-xs font-medium">
+                            <span class="tech-badge bg-white/20 text-white/90 border border-white/30 text-xs">
                                 {{ tech }}
                             </span>
                             {% endfor %}
-                            {% if project.get_technologies_list|length > 3 %}
-                            <span class="bg-neutral-100 text-neutral-600 px-2 py-1 rounded text-xs font-medium">
-                                +{{ project.get_technologies_list|length|add:"-3" }}
-                            </span>
-                            {% endif %}
                         </div>
                         
                         <!-- Project Links -->
-                        <div class="flex space-x-3">
+                        <div class="flex space-x-3 opacity-0 group-hover:opacity-100 transition-all">
                             {% if project.github_url %}
-                            <a href="{{ project.github_url }}" 
-                               target="_blank"
-                               class="flex items-center space-x-1 text-neutral-600 hover:text-primary-600 transition-colors text-sm font-medium">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                                </svg>
-                                <span>Code</span>
+                            <a href="{{ project.github_url }}" target="_blank" class="flex-1 bg-white/20 text-white py-2 px-3 rounded-lg text-center text-xs font-medium hover:bg-white/30 transition-all border border-white/30">
+                                Code
                             </a>
                             {% endif %}
-                            
                             {% if project.live_url %}
-                            <a href="{{ project.live_url }}" 
-                               target="_blank"
-                               class="flex items-center space-x-1 text-neutral-600 hover:text-primary-600 transition-colors text-sm font-medium">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                </svg>
-                                <span>Live Demo</span>
+                            <a href="{{ project.live_url }}" target="_blank" class="flex-1 bg-primary-500/80 text-white py-2 px-3 rounded-lg text-center text-xs font-medium hover:bg-primary-600 transition-all">
+                                Demo
                             </a>
                             {% endif %}
                         </div>
@@ -142,54 +148,78 @@
                 {% empty %}
                 <div class="col-span-full text-center py-12">
                     <div class="glass-card rounded-2xl p-8 max-w-md mx-auto">
-                        <svg class="w-16 h-16 text-neutral-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                        </svg>
+                        <div class="text-neutral-400 mb-4">
+                            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
                         <h3 class="text-xl font-semibold text-neutral-700 mb-2">No Projects Yet</h3>
-                        <p class="text-neutral-600">Projects will be displayed here once they're added.</p>
+                        <p class="text-neutral-600">Projects will appear here once added.</p>
                     </div>
                 </div>
                 {% endfor %}
             </div>
+
+            <!-- View All Button -->
+            {% if projects %}
+            <div class="text-center animate-fade-in-up">
+                <a href="{% url 'project_list' %}" class="btn-primary group">
+                    <span class="flex items-center space-x-2">
+                        <span>View All Projects</span>
+                        <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+            {% endif %}
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="section-padding">
+    <section id="about" class="py-20 lg:py-28 bg-gradient-to-b from-white/5 to-transparent">
         <div class="container-custom">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Section Header -->
+            <div class="text-center mb-16 animate-fade-in-up">
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-neutral-800 mb-4">
+                    About Me
+                </h2>
+                <p class="text-lg text-neutral-600 max-w-2xl mx-auto">
+                    Passionate developer crafting digital solutions with code and creativity
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                 <!-- About Content -->
-                <div class="space-y-6">
-                    <h2 class="text-4xl lg:text-5xl font-bold text-neutral-800">
-                        About Me
-                    </h2>
-                    
-                    <div class="space-y-4 text-lg text-neutral-600 leading-relaxed">
-                        <p>
-                            {{ profile.bio }}
-                        </p>
+                <div class="space-y-8 animate-fade-in-up">
+                    <!-- Bio -->
+                    <div class="glass-card rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold text-neutral-800 mb-4">Background</h3>
+                        <p class="text-lg text-neutral-600 leading-relaxed">{{ profile.bio }}</p>
                         
                         {% if profile.location %}
-                        <div class="flex items-center space-x-2 text-primary-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center space-x-3 text-primary-600 font-semibold mt-6 pt-6 border-t border-white/20">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                             <span>{{ profile.location }}</span>
                         </div>
                         {% endif %}
                     </div>
-                    
-                    <!-- Skills/Technologies -->
-                    <div class="pt-6">
-                        <h3 class="text-2xl font-semibold text-neutral-800 mb-4">
+
+                    <!-- Skills Section -->
+                    <div class="glass-card rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold text-neutral-800 mb-6">
                             Technologies & Skills
                         </h3>
                         <div class="flex flex-wrap gap-3">
                             {% for project in featured_projects %}
                                 {% for tech in project.get_technologies_list %}
-                                    <span class="glass-card px-4 py-2 rounded-full text-sm font-medium text-primary-700">
-                                        {{ tech }}
+                                    <span class="glass-card px-3 py-2 rounded-full text-sm font-medium text-neutral-700 border border-white/30 hover:border-primary-300 hover:bg-primary-50/30 transition-all">
+                                        <span class="flex items-center space-x-1">
+                                            <span class="w-1.5 h-1.5 bg-primary-500 rounded-full"></span>
+                                            <span>{{ tech }}</span>
+                                        </span>
                                     </span>
                                 {% endfor %}
                             {% endfor %}
@@ -197,34 +227,73 @@
                     </div>
                 </div>
                 
-                <!-- Contact Info -->
-                <div class="glass-card rounded-2xl p-8 space-y-6">
-                    <h3 class="text-2xl font-semibold text-neutral-800">
-                        Let's Connect
-                    </h3>
-                    
-                    <div class="space-y-4">
-                        {% if profile.email %}
-                        <div class="flex items-center space-x-3">
-                            <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                            </svg>
-                            <a href="mailto:{{ profile.email }}" class="text-neutral-600 hover:text-primary-600 transition-colors">
-                                {{ profile.email }}
-                            </a>
+                <!-- Connect Card -->
+                <div class="space-y-6 animate-fade-in-up" style="animation-delay: 100ms;">
+                    <!-- Main Connect Card -->
+                    <div class="glass-card-strong rounded-2xl p-8 space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-neutral-800 mb-2">
+                                Let's Connect
+                            </h3>
+                            <p class="text-neutral-600">Reach out and let's discuss how we can collaborate.</p>
                         </div>
-                        {% endif %}
                         
-                        {% if profile.github %}
-                        <div class="flex items-center space-x-3">
-                            <svg class="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                            </svg>
-                            <a href="{{ profile.github }}" target="_blank" class="text-neutral-600 hover:text-primary-600 transition-colors">
-                                GitHub Profile
+                        <!-- Contact Links -->
+                        <div class="space-y-3">
+                            {% if profile.email %}
+                            <a href="mailto:{{ profile.email }}" class="flex items-center space-x-4 p-4 rounded-xl bg-white/50 hover:bg-primary-100/30 transition-all group border border-transparent hover:border-primary-200">
+                                <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-200 transition-colors flex-shrink-0">
+                                    <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm text-neutral-500 font-medium">Email</p>
+                                    <p class="text-neutral-800 font-semibold truncate">{{ profile.email }}</p>
+                                </div>
+                            </a>
+                            {% endif %}
+                            
+                            {% if profile.github %}
+                            <a href="{{ profile.github }}" target="_blank" class="flex items-center space-x-4 p-4 rounded-xl bg-white/50 hover:bg-primary-100/30 transition-all group border border-transparent hover:border-primary-200">
+                                <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-200 transition-colors flex-shrink-0">
+                                    <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-neutral-500 font-medium">GitHub</p>
+                                    <p class="text-neutral-800 font-semibold">View My Work</p>
+                                </div>
+                            </a>
+                            {% endif %}
+                            
+                            {% if profile.linkedin %}
+                            <a href="{{ profile.linkedin }}" target="_blank" class="flex items-center space-x-4 p-4 rounded-xl bg-white/50 hover:bg-primary-100/30 transition-all group border border-transparent hover:border-primary-200">
+                                <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-200 transition-colors flex-shrink-0">
+                                    <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-neutral-500 font-medium">LinkedIn</p>
+                                    <p class="text-neutral-800 font-semibold">Connect</p>
+                                </div>
+                            </a>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- CTA -->
+                        <div class="pt-6 border-t border-white/20">
+                            <a href="#contact" class="block w-full btn-primary text-center group">
+                                <span class="flex items-center justify-center space-x-2">
+                                    <span>Send Me a Message</span>
+                                    <svg class="w-5 h-5 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                </span>
                             </a>
                         </div>
-                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -232,7 +301,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="section-padding bg-white/30">
+    <section id="contact" class="py-20 lg:py-28">
         <div class="container-custom">
             {% include 'main/contact.html' %}
         </div>

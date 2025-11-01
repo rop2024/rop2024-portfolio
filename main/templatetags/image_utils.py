@@ -51,29 +51,64 @@ def responsive_image(image, rendition_key, alt_text="", class_name="", lazy_load
         
         # Build image tag
         img_attrs = {
-            'src': url,
             'alt': alt_text,
             'class': class_name,
         }
-        
+
         # Only add width/height if they exist
         if width:
             img_attrs['width'] = width
         if height:
             img_attrs['height'] = height
-            
-        img_attrs['loading'] = 'lazy' if lazy_loading else 'eager'
-        
+
+        # Prefer a small placeholder for the initial src when lazy-loading
+        placeholder = ''
+        try:
+            # try a very small rendition if available
+            small_rend = getattr(image, 'small', None)
+            if small_rend:
+                placeholder = small_rend.url
+        except Exception:
+            placeholder = ''
+
+        # If lazy_loading is requested, emit `data-src` and a tiny placeholder `src` so
+        # the IntersectionObserver in the base template can swap `data-src` -> `src`.
+        if lazy_loading:
+            # Use a 1x1 transparent gif as ultimate fallback placeholder
+            tiny_placeholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
+            img_attrs['src'] = placeholder or tiny_placeholder
+            img_attrs['data-src'] = url
+            # keep `loading` attribute as a fallback for browsers that support it
+            img_attrs['loading'] = 'lazy'
+            # ensure the lazy class is present for styling/selection
+            existing_class = img_attrs.get('class', '')
+            if 'lazy' not in existing_class.split():
+                img_attrs['class'] = (existing_class + ' lazy').strip()
+        else:
+            img_attrs['src'] = url
+            img_attrs['loading'] = 'eager'
+
         if srcset:
-            img_attrs['srcset'] = srcset
+            # If lazy-loading is active, we still expose srcset on the data-src attribute
+            if lazy_loading:
+                img_attrs['data-srcset'] = srcset
+            else:
+                img_attrs['srcset'] = srcset
         if sizes:
             img_attrs['sizes'] = sizes
-            
+
         # Add any additional attributes
         img_attrs.update(kwargs)
-        
-        # Build the HTML
-        attrs_str = " ".join([f'{key}="{value}"' for key, value in img_attrs.items()])
+
+        # Build the HTML attributes string
+        attrs = []
+        for key, value in img_attrs.items():
+            # skip empty values
+            if value is None or value == '':
+                continue
+            attrs.append(f'{key}="{value}"')
+
+        attrs_str = ' '.join(attrs)
         return mark_safe(f'<img {attrs_str}>')
         
     except Exception as e:

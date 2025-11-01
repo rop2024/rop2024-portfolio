@@ -1,0 +1,9 @@
+{
+  "name": "portfolio-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "theme:dev": "cd theme/static_src && npm run dev",
+    "theme:build": "cd theme/static_src && npm run build"
+  }
+}

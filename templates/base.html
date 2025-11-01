@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Portfolio - Your Name{% endblock %}</title>
+    <title>{% block title %}Portfolio - {{ profile.name|default:"Developer" }}{% endblock %}</title>
     <meta name="description" content="{% block description %}Professional portfolio showcasing projects and skills{% endblock %}">
     
     <!-- Preload critical resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    {% load static tailwind_tags %}
-    {% tailwind_css %}
-    
-    <!-- Fallback CSS if Tailwind tag fails -->
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    {% load static %}
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
+    {# Debug: resolved static path for the compiled CSS (only visible in DEBUG/dev) #}
+    {% if debug %}
+    <!-- COMPILED_CSS_PATH: {{ STATIC_URL }}css/dist/styles.css -->
+    {% endif %}
     
     <!-- Preload important images -->
     {% block preload_images %}{% endblock %}
@@ -22,36 +24,65 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body class="font-sans bg-gradient-to-br from-neutral-50 via-blue-50 to-indigo-50 min-h-screen">
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 backdrop-blur-md bg-white/70 border-b border-white/20">
+    <!-- Enhanced Navigation -->
+    <!-- Navbar: solid background and show user's name (no logo) -->
+    <nav class="fixed top-0 w-full z-50 bg-white border-b border-white/20">
         <div class="container-custom">
             <div class="flex justify-between items-center py-4">
-                <!-- Logo -->
-                <a href="{% url 'home' %}" class="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors">
-                    Portfolio
+                <!-- Show user's first name only (no underline) -->
+                <a href="{% url 'home' %}" class="flex items-center space-x-3 group no-underline" id="nav-name-link">
+                    <span id="nav-name" class="text-2xl font-bold text-neutral-800">
+                        {{ profile.name|default:"Your Name" }}
+                    </span>
                 </a>
                 
                 <!-- Desktop Navigation -->
-                <div class="hidden md:flex space-x-8">
-                    <a href="{% url 'home' %}#projects" class="nav-link">Projects</a>
-                    <a href="{% url 'home' %}#about" class="nav-link">About</a>
-                    <a href="{% url 'home' %}#contact" class="nav-link">Contact</a>
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="{% url 'home' %}#projects" class="nav-link">
+                        Projects
+                    </a>
+                    <a href="{% url 'home' %}#about" class="nav-link">
+                        About
+                    </a>
+                    <a href="{% url 'home' %}#contact" class="nav-link">
+                        Contact
+                    </a>
+                    <a href="{% url 'stats' %}" class="nav-link">
+                        Stats
+                    </a>
+                    <a href="{% url 'project_list' %}" class="btn-ghost ml-2">
+                        View All Work
+                    </a>
                 </div>
                 
-                <!-- Mobile menu button -->
-                <button class="md:hidden p-2 rounded-lg hover:bg-white/50 transition-colors" id="mobile-menu-button">
-                    <svg class="w-6 h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
+                <!-- Enhanced Mobile menu button (match solid navbar background) -->
+                <button class="md:hidden p-3 rounded-xl bg-white hover:bg-white/95 transition-all duration-300" id="mobile-menu-button" aria-label="Toggle menu">
+                    <div class="w-6 h-6 relative">
+                        <span class="absolute top-1/2 left-1/2 w-4 h-0.5 bg-neutral-700 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300" id="menu-line-1"></span>
+                        <span class="absolute top-1/2 left-1/2 w-4 h-0.5 bg-neutral-700 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300" id="menu-line-2"></span>
+                        <span class="absolute top-1/2 left-1/2 w-4 h-0.5 bg-neutral-700 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300" id="menu-line-3"></span>
+                    </div>
                 </button>
             </div>
             
-            <!-- Mobile Navigation -->
-            <div class="md:hidden hidden py-4 border-t border-white/20" id="mobile-menu">
-                <div class="flex flex-col space-y-4">
-                    <a href="{% url 'home' %}#projects" class="nav-link py-2">Projects</a>
-                    <a href="{% url 'home' %}#about" class="nav-link py-2">About</a>
-                    <a href="{% url 'home' %}#contact" class="nav-link py-2">Contact</a>
+            <!-- Enhanced Mobile Navigation -->
+            <div class="md:hidden hidden py-4 border-t border-white/20 animate-fade-in" id="mobile-menu">
+                <div class="flex flex-col space-y-2">
+                    <a href="{% url 'home' %}#projects" class="nav-link text-lg py-3">
+                        Projects
+                    </a>
+                    <a href="{% url 'home' %}#about" class="nav-link text-lg py-3">
+                        About
+                    </a>
+                    <a href="{% url 'home' %}#contact" class="nav-link text-lg py-3">
+                        Contact
+                    </a>
+                    <a href="{% url 'stats' %}" class="nav-link text-lg py-3">
+                        Stats
+                    </a>
+                    <a href="{% url 'project_list' %}" class="btn-secondary text-center mt-2">
+                        View All Work
+                    </a>
                 </div>
             </div>
         </div>
@@ -63,55 +94,120 @@
         {% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white/50 backdrop-blur-sm border-t border-white/20 mt-auto">
+    <!-- Enhanced Footer -->
+    <footer class="bg-gradient-to-b from-white/30 to-white/10 backdrop-blur-xl border-t border-white/20 mt-auto supports-backdrop-blur:bg-white/20">
         <div class="container-custom">
-            <div class="py-12">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="py-16">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 mb-12">
                     <!-- Brand -->
-                    <div class="space-y-4">
-                        <h3 class="text-xl font-bold text-primary-600">Portfolio</h3>
-                        <p class="text-neutral-600 max-w-md">
-                            Crafting digital experiences with modern technologies and clean design.
-                        </p>
-                    </div>
-                    
-                    <!-- Links -->
-                    <div class="space-y-4">
-                        <h4 class="font-semibold text-neutral-800">Quick Links</h4>
-                        <div class="flex flex-col space-y-2">
-                            <a href="{% url 'home' %}" class="text-neutral-600 hover:text-primary-600 transition-colors">Home</a>
-                            <a href="{% url 'home' %}#projects" class="text-neutral-600 hover:text-primary-600 transition-colors">Projects</a>
-                            <a href="{% url 'home' %}#contact" class="text-neutral-600 hover:text-primary-600 transition-colors">Contact</a>
+                    <div class="space-y-6 animate-fade-in-up">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center shadow-lg">
+                                <span class="text-white font-bold text-lg">P</span>
+                            </div>
+                            <span class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">
+                                Portfolio
+                            </span>
                         </div>
-                    </div>
-                    
-                    <!-- Social -->
-                    <div class="space-y-4">
-                        <h4 class="font-semibold text-neutral-800">Connect</h4>
-                        <div class="flex space-x-4">
+                        <p class="text-neutral-600 leading-relaxed max-w-sm">
+                            Crafting beautiful digital experiences with modern technologies and thoughtful design.
+                        </p>
+                        <div class="flex space-x-4 pt-2">
                             {% if profile.github %}
-                            <a href="{{ profile.github }}" target="_blank" class="text-neutral-600 hover:text-primary-600 transition-colors transform hover:scale-110">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ profile.github }}" target="_blank" class="w-10 h-10 bg-white/50 hover:bg-white/70 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110" aria-label="GitHub">
+                                <svg class="w-5 h-5 text-neutral-700" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                                 </svg>
                             </a>
                             {% endif %}
                             
                             {% if profile.linkedin %}
-                            <a href="{{ profile.linkedin }}" target="_blank" class="text-neutral-600 hover:text-primary-600 transition-colors transform hover:scale-110">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ profile.linkedin }}" target="_blank" class="w-10 h-10 bg-white/50 hover:bg-white/70 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110" aria-label="LinkedIn">
+                                <svg class="w-5 h-5 text-neutral-700" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                </svg>
+                            </a>
+                            {% endif %}
+                            
+                            {% if profile.twitter %}
+                            <a href="{{ profile.twitter }}" target="_blank" class="w-10 h-10 bg-white/50 hover:bg-white/70 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110" aria-label="Twitter">
+                                <svg class="w-5 h-5 text-neutral-700" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417a9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
                                 </svg>
                             </a>
                             {% endif %}
                         </div>
                     </div>
+                    
+                    <!-- Links -->
+                    <div class="space-y-4 animate-fade-in-up" style="animation-delay: 100ms;">
+                        <h4 class="font-bold text-neutral-800 text-lg">Navigation</h4>
+                        <div class="flex flex-col space-y-2">
+                            <a href="{% url 'home' %}" class="text-neutral-600 hover:text-primary-600 transition-colors duration-200">Home</a>
+                            <a href="{% url 'project_list' %}" class="text-neutral-600 hover:text-primary-600 transition-colors duration-200">Projects</a>
+                            <a href="{% url 'home' %}#about" class="text-neutral-600 hover:text-primary-600 transition-colors duration-200">About</a>
+                            <a href="{% url 'home' %}#contact" class="text-neutral-600 hover:text-primary-600 transition-colors duration-200">Contact</a>
+                            <a href="{% url 'stats' %}" class="text-neutral-600 hover:text-primary-600 transition-colors duration-200">Statistics</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Links -->
+                    <div class="space-y-4 animate-fade-in-up" style="animation-delay: 200ms;">
+                        <h4 class="font-bold text-neutral-800 text-lg">Featured Work</h4>
+                        <div class="flex flex-col space-y-2">
+                            {% for project in featured_projects|slice:":3" %}
+                            <a href="{% url 'project_detail' project.slug %}" class="text-neutral-600 hover:text-primary-600 transition-colors duration-200 text-sm line-clamp-1">
+                                → {{ project.title }}
+                            </a>
+                            {% empty %}
+                            <p class="text-neutral-500 text-sm">No projects yet</p>
+                            {% endfor %}
+                            <a href="{% url 'project_list' %}" class="text-primary-600 hover:text-primary-700 transition-colors duration-200 text-sm font-semibold pt-1">
+                                View all →
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Get In Touch -->
+                    <div class="space-y-4 animate-fade-in-up" style="animation-delay: 300ms;">
+                        <h4 class="font-bold text-neutral-800 text-lg">Get In Touch</h4>
+                        <div class="space-y-3">
+                            {% if profile.email %}
+                            <a href="mailto:{{ profile.email }}" class="flex items-center space-x-2 group">
+                                <svg class="w-4 h-4 text-primary-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="text-neutral-600 hover:text-primary-600 transition-colors text-sm">{{ profile.email }}</span>
+                            </a>
+                            {% endif %}
+                            {% if profile.location %}
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-primary-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                </svg>
+                                <span class="text-neutral-600 text-sm">{{ profile.location }}</span>
+                            </div>
+                            {% endif %}
+                            <a href="{% url 'home' %}#contact" class="btn-ghost text-sm px-4 py-2 inline-block mt-2 w-full text-center">
+                                Send Message →
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Copyright -->
-                <div class="border-t border-white/20 mt-8 pt-8 text-center text-neutral-500">
-                    <p>&copy; {% now "Y" %} {{ profile.name }}. All rights reserved.</p>
+                <!-- Divider -->
+                <div class="border-t border-white/20"></div>
+                
+                <!-- Enhanced Copyright -->
+                <div class="mt-8 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                    <p class="text-neutral-500 text-sm">
+                        &copy; {% now "Y" %} <span class="font-semibold text-neutral-600">{{ profile.name|default:"Portfolio" }}</span>. Handcrafted with care.
+                    </p>
+                    <div class="flex space-x-6 text-sm text-neutral-500">
+                        <a href="#" class="hover:text-primary-600 transition-colors duration-200">Privacy Policy</a>
+                        <a href="#" class="hover:text-primary-600 transition-colors duration-200">Terms</a>
+                        <a href="#" class="hover:text-primary-600 transition-colors duration-200">Sitemap</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,7 +221,9 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const img = entry.target;
-                        img.src = img.dataset.src;
+                        // swap data-src and data-srcset into src/srcset so the browser loads them
+                        if (img.dataset.src) img.src = img.dataset.src;
+                        if (img.dataset.srcset) img.srcset = img.dataset.srcset;
                         img.classList.remove('lazy');
                         imageObserver.unobserve(img);
                     }
@@ -137,21 +235,33 @@
             });
         }
 
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('mobile-menu');
+        // Mobile menu toggle (safe guards to avoid errors if elements are missing)
+        (function() {
             const button = document.getElementById('mobile-menu-button');
-            
-            if (!menu.contains(event.target) && !button.contains(event.target)) {
-                menu.classList.add('hidden');
+            const menu = document.getElementById('mobile-menu');
+            if (button && menu) {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle('hidden');
+                });
+
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!menu.contains(event.target) && !button.contains(event.target)) {
+                        menu.classList.add('hidden');
+                    }
+                });
             }
-        });
+        })();
+
+        // Display only first name in navbar (client-side fallback)
+        (function() {
+            const el = document.getElementById('nav-name');
+            if (el && el.textContent) {
+                const first = el.textContent.trim().split(/\s+/)[0];
+                if (first) el.textContent = first;
+            }
+        })();
     </script>
     
     {% block extra_js %}{% endblock %}

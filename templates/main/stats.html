@@ -9,127 +9,84 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
     .stat-card {
-        @apply glass-card rounded-2xl p-6 text-center;
+        @apply backdrop-blur-md bg-white/40 border border-white/20 rounded-xl p-8 text-center hover:bg-white/50 transition-all duration-300;
+    }
+    .stat-emoji {
+        @apply text-4xl mb-3;
     }
     .stat-number {
-        @apply text-3xl lg:text-4xl font-bold text-primary-600 mb-2;
+        @apply text-5xl font-bold text-primary-600 mb-2;
     }
     .stat-label {
-        @apply text-neutral-600 font-medium;
+        @apply text-neutral-600 font-medium text-sm;
     }
     .chart-container {
-        @apply glass-card rounded-2xl p-6;
-        height: 300px;
+        @apply backdrop-blur-md bg-white/40 border border-white/20 rounded-xl p-8;
+        position: relative;
+        height: 320px;
+    }
+    .chart-title {
+        @apply text-lg font-semibold text-neutral-800 mb-6 absolute top-8 left-8;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen pt-8">
-    <div class="container-custom">
+<div class="min-h-screen pt-12 pb-16">
+    <div class="container-custom max-w-6xl">
         <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl lg:text-5xl font-bold text-neutral-800 mb-4">
-                Portfolio Statistics
+        <div class="text-center mb-16 animate-fade-in">
+            <h1 class="text-5xl md:text-6xl font-bold text-neutral-800 mb-4">
+                Statistics & Analytics
             </h1>
-            <p class="text-xl text-neutral-600">
-                Analytics and insights about my work and engagement
+            <p class="text-lg text-neutral-600">
+                A quick overview of my portfolio metrics
             </p>
         </div>
 
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div class="stat-card">
+        <!-- Quick Stats - Minimal Card Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 animate-fade-in-up">
+            <!-- Projects Completed -->
+            <div class="stat-card group">
+                <div class="stat-emoji">🧱</div>
                 <div class="stat-number">{{ total_projects }}</div>
-                <div class="stat-label">Total Projects</div>
+                <div class="stat-label">Projects Completed</div>
             </div>
-            <div class="stat-card">
+
+            <!-- Renders Uploaded -->
+            <div class="stat-card group">
+                <div class="stat-emoji">🎨</div>
                 <div class="stat-number">{{ total_renders }}</div>
-                <div class="stat-label">Project Renders</div>
+                <div class="stat-label">Renders Uploaded</div>
             </div>
-            <div class="stat-card">
+
+            <!-- Featured Projects -->
+            <div class="stat-card group">
+                <div class="stat-emoji">⭐</div>
                 <div class="stat-number">{{ featured_projects_count }}</div>
                 <div class="stat-label">Featured Projects</div>
             </div>
-            <div class="stat-card">
+
+            <!-- Messages -->
+            <div class="stat-card group">
+                <div class="stat-emoji">💬</div>
                 <div class="stat-number">{{ total_contact_messages }}</div>
-                <div class="stat-label">Contact Messages</div>
+                <div class="stat-label">Messages Received</div>
             </div>
         </div>
 
         <!-- Charts Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            <!-- Projects by Type -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 animate-fade-in-up">
+            <!-- Projects per Month (Bar Chart) -->
             <div class="chart-container">
-                <h3 class="text-xl font-semibold text-neutral-800 mb-4">Projects by Type</h3>
-                <canvas id="projectsByTypeChart"></canvas>
+                <h3 class="chart-title">Projects per Month</h3>
+                <canvas id="monthlyProjectsChart" style="position: absolute; top: 60px; left: 0; right: 0; bottom: 0; width: 100% !important; height: calc(100% - 60px) !important;"></canvas>
             </div>
 
-            <!-- Technology Usage -->
+            <!-- Renders Over Time (Line Chart) -->
             <div class="chart-container">
-                <h3 class="text-xl font-semibold text-neutral-800 mb-4">Top Technologies</h3>
-                <canvas id="technologyUsageChart"></canvas>
-            </div>
-
-            <!-- Monthly Project Creation -->
-            <div class="chart-container">
-                <h3 class="text-xl font-semibold text-neutral-800 mb-4">Projects Created (Last 12 Months)</h3>
-                <canvas id="monthlyProjectsChart"></canvas>
-            </div>
-
-            <!-- Contact Messages -->
-            <div class="chart-container">
-                <h3 class="text-xl font-semibold text-neutral-800 mb-4">Contact Messages (Last 6 Months)</h3>
-                <canvas id="messageTrendsChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Recent Projects -->
-            <div class="glass-card rounded-2xl p-6">
-                <h3 class="text-xl font-semibold text-neutral-800 mb-4">Recent Projects</h3>
-                <div class="space-y-4">
-                    {% for project in recent_projects %}
-                    <div class="flex items-center space-x-4 p-3 rounded-lg hover:bg-white/50 transition-colors">
-                        {% if project.featured_image %}
-                        <img src="{{ project.featured_image.url }}" 
-                             alt="{{ project.title }}"
-                             class="w-12 h-12 object-cover rounded-lg">
-                        {% endif %}
-                        <div class="flex-1">
-                            <h4 class="font-medium text-neutral-800">{{ project.title }}</h4>
-                            <p class="text-sm text-neutral-600">{{ project.created_at|date:"M d, Y" }}</p>
-                        </div>
-                        <span class="px-2 py-1 bg-primary-100 text-primary-700 rounded text-xs font-medium">
-                            {{ project.get_project_type_display }}
-                        </span>
-                    </div>
-                    {% empty %}
-                    <p class="text-neutral-600 text-center py-4">No projects yet</p>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Recent Messages -->
-            <div class="glass-card rounded-2xl p-6">
-                <h3 class="text-xl font-semibold text-neutral-800 mb-4">Recent Messages</h3>
-                <div class="space-y-4">
-                    {% for message in recent_messages %}
-                    <div class="p-3 rounded-lg hover:bg-white/50 transition-colors">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-medium text-neutral-800">{{ message.name }}</h4>
-                            <span class="px-2 py-1 bg-neutral-100 text-neutral-700 rounded text-xs font-medium">
-                                {% if message.status %}{{ message.get_status_display }}{% else %}New{% endif %}
-                            </span>
-                        </div>
-                        <p class="text-sm text-neutral-600 line-clamp-2">{{ message.subject }}</p>
-                        <p class="text-xs text-neutral-500 mt-1">{{ message.created_at|date:"M d, Y" }}</p>
-                    </div>
-                    {% empty %}
-                    <p class="text-neutral-600 text-center py-4">No messages yet</p>
-                    {% endfor %}
-                </div>
+                <h3 class="chart-title">Renders Over Time</h3>
+                <canvas id="messageTrendsChart" style="position: absolute; top: 60px; left: 0; right: 0; bottom: 0; width: 100% !important; height: calc(100% - 60px) !important;"></canvas>
             </div>
         </div>
     </div>
@@ -138,33 +95,114 @@
 
 {% block extra_js %}
 <script>
-    // Colors for charts
-    const chartColors = [
-        '#0ea5e9', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6',
-        '#06b6d4', '#84cc16', '#f97316', '#6366f1', '#ec4899'
-    ];
+    // Clean color palette
+    const colors = {
+        primary: '#0ea5e9',
+        success: '#10b981',
+        warning: '#f59e0b',
+        error: '#ef4444'
+    };
 
-    // Data passed from Django backend
+    // Data from Django backend
     const chartData = {
-        projectsByType: {{ projects_by_type|to_json|safe }},
-        technologyUsage: {{ technology_usage|to_json|safe }},
         monthlyStats: {{ monthly_project_stats|to_json|safe }},
         messageTrends: {{ message_trends|to_json|safe }}
     };
 
-    // Projects by Type Chart
+    // Chart.js default options
+    Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+    Chart.defaults.color = '#6b7280';
+
+    // Projects per Month (Bar Chart)
     try {
-        const projectsByTypeCtx = document.getElementById('projectsByTypeChart');
-        if (projectsByTypeCtx && Object.keys(chartData.projectsByType).length > 0) {
-            new Chart(projectsByTypeCtx.getContext('2d'), {
-                type: 'doughnut',
+        const monthlyCtx = document.getElementById('monthlyProjectsChart');
+        if (monthlyCtx && chartData.monthlyStats.labels && chartData.monthlyStats.labels.length > 0) {
+            new Chart(monthlyCtx, {
+                type: 'bar',
                 data: {
-                    labels: Object.keys(chartData.projectsByType),
+                    labels: chartData.monthlyStats.labels,
                     datasets: [{
-                        data: Object.values(chartData.projectsByType),
-                        backgroundColor: chartColors,
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
+                        label: 'Projects',
+                        data: chartData.monthlyStats.data,
+                        backgroundColor: colors.primary,
+                        borderColor: colors.primary,
+                        borderWidth: 0,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'x',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            borderColor: colors.primary,
+                            borderWidth: 1,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#9ca3af',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(243, 244, 246, 0.5)',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#9ca3af',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    } catch (e) {
+        console.error('Error with monthly chart:', e);
+    }
+
+    // Renders Over Time (Line Chart)
+    try {
+        const trendsCtx = document.getElementById('messageTrendsChart');
+        if (trendsCtx && chartData.messageTrends.labels && chartData.messageTrends.labels.length > 0) {
+            new Chart(trendsCtx, {
+                type: 'line',
+                data: {
+                    labels: chartData.messageTrends.labels,
+                    datasets: [{
+                        label: 'Messages',
+                        data: chartData.messageTrends.data,
+                        borderColor: colors.success,
+                        backgroundColor: colors.success + '20',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: colors.success,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: colors.success
                     }]
                 },
                 options: {
@@ -172,41 +210,39 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            borderColor: colors.success,
+                            borderWidth: 1,
+                            displayColors: false
                         }
-                    }
-                }
-            });
-        }
-    } catch (e) {
-        console.error('Error initializing projects by type chart', e);
-    }
-
-    // Technology Usage Chart
-    try {
-        const technologyUsageCtx = document.getElementById('technologyUsageChart');
-        if (technologyUsageCtx && Object.keys(chartData.technologyUsage).length > 0) {
-            new Chart(technologyUsageCtx.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(chartData.technologyUsage),
-                    datasets: [{
-                        label: 'Usage Count',
-                        data: Object.values(chartData.technologyUsage),
-                        backgroundColor: chartColors[0],
-                        borderColor: chartColors[0],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
+                    },
                     scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#9ca3af',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(243, 244, 246, 0.5)',
+                                drawBorder: false
+                            }
+                        },
                         x: {
-                            beginAtZero: true,
                             ticks: {
-                                stepSize: 1
+                                color: '#9ca3af',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
                             }
                         }
                     }
@@ -214,77 +250,7 @@
             });
         }
     } catch (e) {
-        console.error('Error initializing technology usage chart', e);
-    }
-
-    // Monthly Projects Chart
-    try {
-        const monthlyProjectsCtx = document.getElementById('monthlyProjectsChart');
-        if (monthlyProjectsCtx && chartData.monthlyStats.labels && chartData.monthlyStats.labels.length > 0) {
-            new Chart(monthlyProjectsCtx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: chartData.monthlyStats.labels,
-                    datasets: [{
-                        label: 'Projects Created',
-                        data: chartData.monthlyStats.data,
-                        borderColor: chartColors[0],
-                        backgroundColor: chartColors[0] + '33',
-                        tension: 0.4,
-                        fill: true,
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    } catch (e) {
-        console.error('Error initializing monthly projects chart', e);
-    }
-
-    // Message Trends Chart
-    try {
-        const messageTrendsCtx = document.getElementById('messageTrendsChart');
-        if (messageTrendsCtx && chartData.messageTrends.labels && chartData.messageTrends.labels.length > 0) {
-            new Chart(messageTrendsCtx.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: chartData.messageTrends.labels,
-                    datasets: [{
-                        label: 'Messages Received',
-                        data: chartData.messageTrends.data,
-                        backgroundColor: chartColors[2],
-                        borderColor: chartColors[2],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    } catch (e) {
-        console.error('Error initializing message trends chart', e);
+        console.error('Error with trends chart:', e);
     }
 </script>
 {% endblock %}

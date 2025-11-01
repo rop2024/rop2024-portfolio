@@ -3,12 +3,13 @@
   "version": "3.6.0",
   "description": "",
   "scripts": {
-    "build": "npm run build:css && npm run build:js",
-    "build:css": "tailwindcss -i ./src/input.css -o ../static/css/output.css",
-    "build:js": "webpack --mode development",
-    "production": "npm run production:css && npm run production:js",
-    "production:css": "tailwindcss -i ./src/input.css -o ../static/css/output.css --minify",
-    "production:js": "webpack --mode production"
+    "build": "npm run build:css",
+    "build:css": "tailwindcss -i ./src/input.css -o ../static/css/dist/styles.css",
+    "build:js": "echo 'No JavaScript build needed'",
+    "production": "npm run production:css",
+    "production:css": "tailwindcss -i ./src/input.css -o ../static/css/dist/styles.css --minify",
+    "production:js": "echo 'No JavaScript build needed'",
+    "dev": "tailwindcss -i ./src/input.css -o ../static/css/dist/styles.css --watch"
   },
   "keywords": [],
   "author": "",
