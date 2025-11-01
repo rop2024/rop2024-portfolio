@@ -94,7 +94,7 @@
         {% endblock %}
     </main>
 
-    <footer class="bg-white border-t border-white/20 mt-auto">
+    <footer class="bg-white border-t border-neutral-200 mt-auto">
     <div class="container-custom py-12 lg:py-16">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
             
@@ -110,26 +110,26 @@
                 </p>
                 <div class="flex space-x-3 pt-2">
                     {% if profile.github %}
-                    <a href="{{ profile.github }}" target="_blank" class="w-9 h-9 bg-white/50 hover:bg-white/70 rounded-full flex items-center justify-center transition-all duration-300 ring-1 ring-white/30" aria-label="GitHub">
+                    <a href="{{ profile.github }}" target="_blank" class="w-9 h-9 bg-white/50 hover:bg-white/70 rounded-full flex items-center justify-center transition-all duration-300 ring-1 ring-neutral-100" aria-label="GitHub">
                         <svg class="w-4 h-4 text-neutral-700" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12..."/></svg>
                     </a>
                     {% endif %}
                     {% if profile.linkedin %}
-                    <a href="{{ profile.linkedin }}" target="_blank" class="w-9 h-9 bg-white/50 hover:bg-white/70 rounded-full flex items-center justify-center transition-all duration-300 ring-1 ring-white/30" aria-label="LinkedIn">
+                    <a href="{{ profile.linkedin }}" target="_blank" class="w-9 h-9 bg-white/50 hover:bg-white/70 rounded-full flex items-center justify-center transition-all duration-300 ring-1 ring-neutral-100" aria-label="LinkedIn">
                         <svg class="w-4 h-4 text-neutral-700" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14..."/></svg>
                     </a>
                     {% endif %}
                     {% if profile.twitter %}
-                    <a href="{{ profile.twitter }}" target="_blank" class="w-9 h-9 bg-white/50 hover:bg-white/70 rounded-full flex items-center justify-center transition-all duration-300 ring-1 ring-white/30" aria-label="Twitter">
+                    <a href="{{ profile.twitter }}" target="_blank" class="w-9 h-9 bg-white/50 hover:bg-white/70 rounded-full flex items-center justify-center transition-all duration-300 ring-1 ring-neutral-100" aria-label="Twitter">
                         <svg class="w-4 h-4 text-neutral-700" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57..."/></svg>
                     </a>
                     {% endif %}
                 </div>
             </div>
 
-                <div class="md:col-span-8 grid grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="md:col-span-8 grid grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
 
-                <div class="p-6 rounded-lg bg-white shadow-md">
+                <div class="p-6 rounded-lg bg-white shadow-md hover:shadow-lg transform transition duration-200 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary-100">
                     <h4 class="text-lg font-semibold text-neutral-800 mb-3">Navigation</h4>
                     <div class="flex flex-col space-y-2 text-base">
                         <a href="{% url 'home' %}" class="text-neutral-600 hover:text-primary-600 transition-colors">Home</a>
@@ -139,7 +139,7 @@
                     </div>
                 </div>
 
-                <div class="p-6 rounded-lg bg-white shadow-md">
+                <div class="p-6 rounded-lg bg-white shadow-md hover:shadow-lg transform transition duration-200 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary-100">
                     <h4 class="text-lg font-semibold text-neutral-800 mb-3">Featured Work</h4>
                     <div class="flex flex-col space-y-2 text-base">
                         {% for project in featured_projects|slice:":3" %}
@@ -151,7 +151,7 @@
                     </div>
                 </div>
 
-                <div class="p-6 rounded-lg bg-white shadow-md">
+                <div class="p-6 rounded-lg bg-white shadow-md hover:shadow-lg transform transition duration-200 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary-100">
                     <h4 class="text-lg font-semibold text-neutral-800 mb-3">Get In Touch</h4>
                     <div class="space-y-2 text-base">
                         {% if profile.email %}
@@ -166,7 +166,7 @@
             </div>
         </div>
 
-        <hr class="mt-10 mb-6 border-t border-white/20">
+                <hr class="mt-10 mb-6 border-t border-neutral-200">
 
         <div class="flex flex-col sm:flex-row sm:justify-between items-center text-center sm:text-left space-y-3 sm:space-y-0">
             <p class="text-neutral-500 text-sm order-2 sm:order-1">&copy; {% now "Y" %} <span class="font-semibold text-neutral-600">{{ profile.name|default:"Portfolio" }}</span>. Handcrafted with care.</p>
