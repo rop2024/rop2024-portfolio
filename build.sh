@@ -16,3 +16,6 @@ python manage.py collectstatic --noinput
 
 # Run migrations
 python manage.py migrate
+
+# Create admin user if environment variables are set
+python manage.py create_admin
