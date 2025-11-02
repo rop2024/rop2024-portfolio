@@ -10,9 +10,9 @@
     </div>
     
     <!-- Contact Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
         <!-- Contact Form -->
-        <div class="lg:col-span-2 glass-card rounded-2xl p-8 animate-fade-in-up">
+        <div class="glass-card rounded-2xl p-8 animate-fade-in-up min-w-0">
             <h3 class="text-2xl font-bold text-neutral-800 mb-8">Send Me a Message</h3>
             
             <form method="post" action="{% url 'contact' %}" class="space-y-6">
@@ -87,7 +87,7 @@
         </div>
         
         <!-- Contact Information Sidebar -->
-        <div class="space-y-6 animate-fade-in-up" style="animation-delay: 100ms;">
+        <div class="space-y-6 animate-fade-in-up flex flex-col min-w-0" style="animation-delay: 100ms;">
             <!-- Direct Contact Card -->
             <div class="glass-card-strong rounded-2xl p-8">
                 <h3 class="text-xl font-bold text-neutral-800 mb-6">
