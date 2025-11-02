@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: portfolio
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "python manage.py migrate && gunicorn sitecore.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: DATABASE_URL
+        fromDatabase:
+          name: portfolio-db
+          property: connectionString
+
+databases:
+  - name: portfolio-db
+    plan: free

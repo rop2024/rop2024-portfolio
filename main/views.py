@@ -275,3 +275,9 @@ def home(request):
 def contact(request):
     view = ContactView.as_view()
     return view(request)
+
+def custom_404(request, exception):
+    return render(request, 'main/404.html', status=404)
+
+def custom_500(request):
+    return render(request, 'main/500.html', status=500)

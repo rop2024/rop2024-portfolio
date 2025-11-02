@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - Portfolio{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center section-padding">
+    <div class="container-custom text-center">
+        <div class="glass-card rounded-2xl p-12 max-w-md mx-auto">
+            <div class="text-6xl font-bold text-primary-600 mb-4">404</div>
+            <h1 class="text-2xl font-bold text-neutral-800 mb-4">Page Not Found</h1>
+            <p class="text-neutral-600 mb-8">
+                The page you're looking for doesn't exist or has been moved.
+            </p>
+            <a href="{% url 'home' %}" class="btn-primary">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
